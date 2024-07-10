@@ -1,0 +1,67 @@
+# Ignore Python bytecode files
+__pycache__/
+*.pyc
+
+# Ignore Jupyter notebook checkpoints
+.ipynb_checkpoints
+
+# Ignore virtual environment directories
+venv/
+env/
+.venv/
+# Ignore local LLM model files
+.LaMini-T5-738M/
+*.bin
+*.json
+*.params
+*.model
+*.ckpt
+
+# Ignore local LLM model files
+/Users/apple/Desktop/test_model/LaMini-T5-738M/
+*.bin
+*.json
+*.params
+*.model
+*.ckpt
+# Ignore specific model files
+path/to/your/model/directory/
+*.bin
+*.h5
+*.pt
+*.ckpt
+
+# Ignore dataset files
+datasets/
+*.csv
+*.json
+*.xlsx
+
+# Ignore cache directories
+.cache/
+.local/
+.history/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore Streamlit's cached directories
+.streamlit/
+
+# Ignore log files
+*.log
+logs/
+
+# Ignore VSCode settings
+.vscode/
+
+# Ignore temporary files
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Ignore environment variable files
+.env
+LaMini-T5-738M/
