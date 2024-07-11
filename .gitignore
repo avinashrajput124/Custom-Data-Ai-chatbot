@@ -48,7 +48,9 @@ Thumbs.db
 
 # Ignore Streamlit's cached directories
 .streamlit/
-
+# Ignore Streamlit's cached directories
+.myenv/
+*.myenv/
 # Ignore log files
 *.log
 logs/
@@ -63,5 +65,5 @@ logs/
 *.swo
 
 # Ignore environment variable files
-.env
+.myenv
 LaMini-T5-738M/
