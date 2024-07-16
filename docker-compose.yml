@@ -7,10 +7,7 @@ services:
       - "5000"
     environment:
       - TRANSFORMERS_CACHE=/app/cache
-    ports:
-      - "5000:5000"
-    depends_on:
-      - nginx
+    command: python app.py
 
   nginx:
     image: nginx:latest
@@ -18,3 +15,5 @@ services:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - flask-app
