@@ -1,0 +1,9 @@
+flask
+gunicorn
+numpy
+scipy
+pandas
+gunicorn
+torch
+langchain
+transformers
