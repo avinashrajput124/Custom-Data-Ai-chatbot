@@ -20,8 +20,8 @@ RUN . venv/bin/activate && pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Copy the entrypoint script and make it executable
-COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
+# COPY entrypoint.sh /app/entrypoint.sh
+# RUN chmod +x /app/entrypoint.sh
 
 # Set the environment variable to use the virtual environment
 ENV PATH="/app/venv/bin:$PATH"

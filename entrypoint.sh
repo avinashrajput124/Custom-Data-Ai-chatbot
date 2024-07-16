@@ -1,9 +1,8 @@
-#!/bin/sh
-# Activate the virtual environment
-. /app/venv/bin/activate
+# #!/bin/sh
+# set -e
 
-# Run the ingest script
-python /app/ingest.py
+# # Activate virtual environment
+# . /app/venv/bin/activate
 
-# Start the Flask application
-exec python /app/app.py
+# # Run ingest script
+# python ingest.py
