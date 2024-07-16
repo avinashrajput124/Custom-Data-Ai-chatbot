@@ -1,16 +1,19 @@
-version: '3'
+version: '3.8'
+
 services:
-  flask_app:
+  flask-app:
     build: .
-    ports:
-      - "8000:8000"
+    expose:
+      - "5000"
+    environment:
+      - TRANSFORMERS_CACHE=/app/cache
+    command: python app.py
 
   nginx:
-    build:
-      context: .
-      dockerfile: nginx.dockerfile
+    image: nginx:latest
     ports:
       - "80:80"
-      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
-      - flask_app
+      - flask-app
