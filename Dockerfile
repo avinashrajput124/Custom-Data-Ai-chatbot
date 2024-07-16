@@ -19,15 +19,11 @@ RUN . venv/bin/activate && pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application
 COPY . .
 
-# Copy the entrypoint script and make it executable
-# COPY entrypoint.sh /app/entrypoint.sh
-# RUN chmod +x /app/entrypoint.sh
-
 # Set the environment variable to use the virtual environment
 ENV PATH="/app/venv/bin:$PATH"
 
 # Expose the port the Flask app runs on
 EXPOSE 5000
 
-# Set the entrypoint script as the entry point
-ENTRYPOINT ["/app/entrypoint.sh"]
+# Run the application
+CMD ["python", "app.py"]
