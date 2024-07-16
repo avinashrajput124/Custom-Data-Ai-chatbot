@@ -6,6 +6,9 @@ from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA
 from langchain.llms import HuggingFacePipeline
 import torch
+import asyncio
+import concurrent.futures
+import time
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -16,7 +19,7 @@ app = Flask(__name__)
 
 def load_models():
     global tokenizer, base_model, llm_pipeline, qa_llm_resource
-    checkpoint = "MBZUAI/LaMini-T5-738M"
+    checkpoint = "t5-small" 
     tokenizer = AutoTokenizer.from_pretrained(checkpoint)
     base_model = AutoModelForSeq2SeqLM.from_pretrained(
         checkpoint,
@@ -27,15 +30,14 @@ def load_models():
     qa_llm_resource = load_qa_llm_resource()
 
 def create_llm_pipeline(detailed=False):
-    max_length = 128 if not detailed else 300
+    max_length = 64 if not detailed else 150 
     pipe = pipeline(
         'text2text-generation',
         model=base_model,
         tokenizer=tokenizer,
         max_length=max_length,
-        do_sample=True,
-        temperature=0.8,
-        top_p=0.9,
+        do_sample=False, 
+        num_beams=2, 
     )
     local_llm = HuggingFacePipeline(pipeline=pipe)
     return local_llm
@@ -48,7 +50,7 @@ def load_qa_llm_resource():
 
 def get_qa_llm(detailed=False):
     llm, db = qa_llm_resource
-    retriever = db.as_retriever(search_type="similarity", search_kwargs={"k": 2})
+    retriever = db.as_retriever(search_type="similarity", search_kwargs={"k": 1})   
     qa = RetrievalQA.from_chain_type(
         llm=llm,
         chain_type="stuff",
@@ -57,10 +59,12 @@ def get_qa_llm(detailed=False):
     )
     return qa
 
-def process_answer(instruction, detailed=False):
+def process_answer_sync(instruction, detailed=False):
     qa = get_qa_llm(detailed=detailed)
+    start_time = time.time()
     generated_text = qa(instruction)
     logger.info(f"Generated answer: {generated_text}")
+    logger.info(f"Time taken for QA inference: {time.time() - start_time} seconds")
     result_text = generated_text['result']
     
     keywords = [
@@ -82,7 +86,13 @@ def process_answer(instruction, detailed=False):
             answer = f"{answer}\n{source_info}"
 
     return answer
-    
+
+async def process_answer(instruction, detailed=False):
+    loop = asyncio.get_event_loop()
+    with concurrent.futures.ThreadPoolExecutor() as pool:
+        answer = await loop.run_in_executor(pool, process_answer_sync, instruction, detailed)
+    return answer
+
 basic_intents = {
     "greet": ["hello", "hi", "hey"],
     "goodbye": ["bye", "goodbye", "see you"],
@@ -123,17 +133,16 @@ def home():
     return render_template('index.html')
 
 @app.route('/chat', methods=['POST'])
-def chat():
+async def chat():
     user_input = request.json.get('message')
     detailed = any(keyword in user_input.lower() for keyword in keywords_for_details)
     intent = match_intent(user_input)
     if intent:
         answer = basic_responses[intent]
     else:
-        answer = process_answer(user_input, detailed=detailed)
+        answer = await process_answer(user_input, detailed=detailed)
     return jsonify({'response': answer})
 
 if __name__ == '__main__':
     load_models()
-    app.run(host='0.0.0.0', port=5000)
-    # app.run(debug=True)
+    app.run(debug=True)
