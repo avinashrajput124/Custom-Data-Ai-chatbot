@@ -19,7 +19,7 @@ app = Flask(__name__)
 
 def load_models():
     global tokenizer, base_model, llm_pipeline, qa_llm_resource
-    checkpoint = "t5-small" 
+    checkpoint = "MBZUAI/LaMini-T5-738M" 
     tokenizer = AutoTokenizer.from_pretrained(checkpoint)
     base_model = AutoModelForSeq2SeqLM.from_pretrained(
         checkpoint,
