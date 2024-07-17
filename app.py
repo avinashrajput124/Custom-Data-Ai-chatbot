@@ -157,7 +157,7 @@ device = torch.device('cpu')
 
 app = Flask(__name__)
 
-# Initialize variables
+
 tokenizer = None
 base_model = None
 llm_pipeline = None
