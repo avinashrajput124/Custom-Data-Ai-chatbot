@@ -17,6 +17,12 @@ device = torch.device('cpu')
 
 app = Flask(__name__)
 
+# Global variables
+tokenizer = None
+base_model = None
+llm_pipeline = None
+qa_llm_resource = None
+
 def load_models():
     global tokenizer, base_model, llm_pipeline, qa_llm_resource
     checkpoint = "t5-small" 
@@ -27,7 +33,7 @@ def load_models():
         torch_dtype=torch.float32
     )
     llm_pipeline = create_llm_pipeline()
-    qa_llm_resource = load_qa_llm_resource()
+    qa_llm_resource = load_qa_llm_resource()  # Initialize qa_llm_resource here
 
 def create_llm_pipeline(detailed=False):
     max_length = 64 if not detailed else 150 
@@ -49,6 +55,7 @@ def load_qa_llm_resource():
     return llm, db
 
 def get_qa_llm(detailed=False):
+    global qa_llm_resource
     llm, db = qa_llm_resource
     retriever = db.as_retriever(search_type="similarity", search_kwargs={"k": 1})   
     qa = RetrievalQA.from_chain_type(
