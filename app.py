@@ -19,7 +19,7 @@ app = Flask(__name__)
 
 def load_models():
     global tokenizer, base_model, llm_pipeline, qa_llm_resource
-    checkpoint = "MBZUAI/LaMini-T5-738M" 
+    checkpoint = "t5-small" 
     tokenizer = AutoTokenizer.from_pretrained(checkpoint)
     base_model = AutoModelForSeq2SeqLM.from_pretrained(
         checkpoint,
@@ -145,5 +145,5 @@ async def chat():
 
 if __name__ == '__main__':
     load_models()
-    # app.run(debug=True, host='0.0.0.0')    
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')    
+    # app.run(debug=True)
